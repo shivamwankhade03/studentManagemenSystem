@@ -4,22 +4,24 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @UuidGenerator
     private String studentId;
     private String firstName;
     private String lastName;
     private String password;
-    private String course;
+    private String courseType;
+    private String courseYear;
     private int credits;
+    private String enrollStatus;
 
 
     @JsonIgnore //added bcz of this error "after the response has been committed?"
@@ -27,5 +29,11 @@ public class Student {
     @JoinColumn( name = "college_fk_id")
     private College college;
 
+    @ManyToOne
+    @JoinColumn( name = "course_fk_id")
+    private Course course;
+
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "student",fetch = FetchType.LAZY)
+    private ChangeCourseRequest changeCourseRequest;
 
 }
